@@ -15,7 +15,7 @@ build:
     - mojo package src/hue -o ${{ PREFIX }}/lib/mojo/hue.mojopkg
 requirements:
   host:
-    - max >= 24.5.0,<25
+    - max
 
 tests:
   - script:
@@ -27,6 +27,9 @@ tests:
     files:
       recipe:
         - test.mojo
+    requirements:
+      run:
+       - max
 
 about:
   homepage: https://github.com/thatstoasty/hue
