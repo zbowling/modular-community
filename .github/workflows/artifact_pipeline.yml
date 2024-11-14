@@ -17,6 +17,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      - uses: prefix-dev/setup-pixi@ba3bb36eb2066252b2363392b7739741bb777659 # v0.8.1
+        with:
+          pixi-version: v0.31.0
+          environments: data
 
       - name: Download artifact
         uses: actions/github-script@v6
@@ -26,7 +30,7 @@ jobs:
           ARTIFACT_FILENAME: data.json
         with:
           script: |
-            const script = require('.github/scripts/download-previous-artifact.js')
+            const script = require('./scripts/download-previous-artifact.js')
             await script({github, context, core})
 
       - name: Modify JSON file
@@ -35,9 +39,12 @@ jobs:
             echo '{"broken_repos": []}' > data.json
           fi
           cat data.json | jq '.broken_repos += ["new_repo"]' > tmp.json && mv tmp.json data.json
+      - name: Update data
+        run: |
+          pixi run --environment data updata-data
 
-      - uses: actions/upload-artifact@v3
-        if: always()
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
         with:
           name: data
           path: data.json

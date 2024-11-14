@@ -24,8 +24,15 @@ pre-commit = ">=4.0.1,<5"
 pre-commit-install = "pre-commit install"
 lint = "pre-commit run -a"
 
+[feature.data.dependencies]
+python = ">=3.13.0,<3.14"
+
+[feature.data.tasks]
+update-data = "python scripts/update-data.py data.json"
+
 [environments]
-default = ["build", "lint", "pre-commit"]
+default = ["build", "lint", "pre-commit", "data"]
 build = ["build"]
 pre-commit = ["pre-commit"]
 lint = ["lint"]
+data = ["data"]
