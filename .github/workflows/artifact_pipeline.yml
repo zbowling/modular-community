@@ -20,14 +20,13 @@ jobs:
 
       - name: Download artifact
         uses: actions/github-script@v6
-        continue-on-error: true
         env:
           WORKFLOW_FILENAME: testing.yml
           ARTIFACT_NAME: data
           ARTIFACT_FILENAME: data.json
         with:
           script: |
-            const script = require('.github/scripts/download-previous-artifact.js')
+            const script = require('./scripts/download-previous-artifact.js')
             await script({github, context, core})
 
       - name: Modify JSON file
