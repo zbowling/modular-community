@@ -1,0 +1,31 @@
+[project]
+name = "modular-community"
+channels = ["conda-forge", "https://conda.modular.com/max"]
+platforms = ["linux-64", "linux-aarch64", "win-64", "osx-64", "osx-arm64"]
+
+[feature.build.tasks]
+build = "rattler-build build -c https://conda.modular.com/max -c conda-forge --recipe"
+# TODO: Add the following as soon as its public '--channel https://prefix.dev/modular-community'
+build-all = """rattler-build build --recipe-dir . --skip-existing=all
+              --channel https://conda.modular.com/max --channel conda-forge"""
+
+[feature.build.dependencies]
+rattler-build = ">=0.30.0,<0.31"
+
+[feature.lint.dependencies]
+actionlint = ">=1.7.4,<2"
+check-jsonschema = ">=0.29.4,<0.30"
+shellcheck = ">=0.10.0,<0.11"
+
+[feature.pre-commit.dependencies]
+pre-commit = ">=4.0.1,<5"
+
+[feature.pre-commit.tasks]
+pre-commit-install = "pre-commit install"
+lint = "pre-commit run -a"
+
+[environments]
+default = ["build", "lint", "pre-commit"]
+build = ["build"]
+pre-commit = ["pre-commit"]
+lint = ["lint"]
