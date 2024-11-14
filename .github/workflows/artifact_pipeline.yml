@@ -33,12 +33,6 @@ jobs:
             const script = require('./scripts/download-previous-artifact.js')
             await script({github, context, core})
 
-      - name: Modify JSON file
-        run: |
-          if [ ! -f data.json ]; then
-            echo '{"broken_repos": []}' > data.json
-          fi
-          cat data.json | jq '.broken_repos += ["new_repo"]' > tmp.json && mv tmp.json data.json
       - name: Update data
         run: |
           pixi run --environment data updata-data
