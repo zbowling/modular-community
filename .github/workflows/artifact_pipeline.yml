@@ -1,0 +1,46 @@
+name: Pipeline
+
+on:
+  schedule:
+    - cron: "0 6 * * *"
+
+jobs:
+  pipeline:
+    name: Start Pipeline
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+
+    # We need to make sure that we have actions read access to get the previous artifact
+    permissions:
+      contents: read
+      actions: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Download artifact
+        uses: actions/github-script@v6
+        continue-on-error: true
+        env:
+          WORKFLOW_FILENAME: testing.yml
+          ARTIFACT_NAME: data
+          ARTIFACT_FILENAME: data.json
+        with:
+          script: |
+            const script = require('./scripts/download-previous-artifact.js')
+            await script({github, context, core})
+
+      - name: Modify JSON file
+        run: |
+          if [ ! -f data.json ]; then
+            echo '{"broken_repos": []}' > data.json
+          fi
+          cat data.json | jq '.broken_repos += ["new_repo"]' > tmp.json && mv tmp.json data.json
+
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: data
+          path: data.json
+          retention-days: 60
