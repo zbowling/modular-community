@@ -27,7 +27,7 @@ jobs:
         env:
           WORKFLOW_FILENAME: artifact_pipeline.yml
           ARTIFACT_NAME: data
-          ARTIFACT_FILENAME: data.json
+          ARTIFACT_FILENAME: data.zip
         with:
           script: |
             const script = require('./scripts/download-previous-artifact.js')
