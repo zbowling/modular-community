@@ -35,7 +35,7 @@ jobs:
 
       - name: Update data
         run: |
-          pixi run --environment data updata-data
+          pixi run --environment data update-data
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
