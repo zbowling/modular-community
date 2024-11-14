@@ -10,16 +10,23 @@ source:
     rev: 32ff979d86393cf91068ead70e96ce18cd701106
 
 build:
-  number: 1
+  number: 2
   script:
-    - mkdir -p ${PREFIX}/lib/mojo
-    - mojo package src/hue
-    - cp hue.mojopkg ${PREFIX}/lib/mojo/hue.mojopkg
-
+    - mojo package src/hue -o ${{ PREFIX }}/lib/mojo/hue.mojopkg
 requirements:
   host:
     - max >= 24.5.0,<25
 
+tests:
+  - script:
+      - if: unix
+        then:
+          #- mojo run test.mojo
+          - cp test.mojo ${PREFIX}/lib/mojo/
+          - mojo run ${PREFIX}/lib/mojo/test.mojo
+    files:
+      recipe:
+        - test.mojo
 
 about:
   homepage: https://github.com/thatstoasty/hue
