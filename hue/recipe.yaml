@@ -10,6 +10,7 @@ source:
     rev: 32ff979d86393cf91068ead70e96ce18cd701106
 
 build:
+  number: 1
   script:
     - mkdir -p ${PREFIX}/lib/mojo
     - mojo package src/hue
