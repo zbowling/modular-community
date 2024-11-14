@@ -27,7 +27,7 @@ jobs:
           ARTIFACT_FILENAME: data.json
         with:
           script: |
-            const script = require('./scripts/download-previous-artifact.js')
+            const script = require('.github/scripts/download-previous-artifact.js')
             await script({github, context, core})
 
       - name: Modify JSON file
