@@ -16,7 +16,7 @@ module.exports = async ({
     const workflow = workflows.data.workflows.find(w => w.path.includes(process.env.WORKFLOW_FILENAME));
   
     if (!workflow) {
-      core.setFailed("No workflow found");
+      core.set("No workflow found");
       return;
     }
   
