@@ -41,7 +41,7 @@ def main():
         # Download artifact
         download_url = artifact.archive_download_url
         headers = {"Authorization": f"token {GITHUB_TOKEN}"}
-        response = httpx.get(download_url, headers=headers)
+        response = httpx.get(download_url, headers=headers, follow_redirects=True)
         response.raise_for_status()
 
         with open(ARTIFACT_FILENAME, "wb") as f:
