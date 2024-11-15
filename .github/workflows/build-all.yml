@@ -4,10 +4,14 @@ on:
   push:
     branches:
       - main
+    paths:
+      - "variants/variants.yml"
   workflow_dispatch:
   pull_request:
     branches:
       - main
+    paths:
+      - "variants/variants.yml"
 
 permissions:
   contents: read
@@ -29,20 +33,17 @@ jobs:
       - name: Build packages
         shell: bash
         run: |
-          pixi run build-all
+          pixi run build-all --channel https://prefix.dev/modular-public-test
         env:
           RATTLER_BUILD_ENABLE_GITHUB_INTEGRATION: true
           RATTLER_BUILD_COLOR: always
 
+      - name: Commit changes to failed-compatibility.json
+        if: github.event_name == 'push'
+        run: |
+          pixi run commit-changes data/failed-compatibility.json
       - name: Upload all packages
         shell: bash
         if: github.event_name == 'push' # do not upload on PR
         run: |
-          shopt -s nullglob
-          EXIT_CODE=0
-          for file in output/**/*.conda; do
-            if ! rattler-build upload prefix -c modular-community-beta "$file"; then
-              EXIT_CODE=1
-            fi
-          done
-          exit $EXIT_CODE
+          pixi run upload --channel https://prefix.dev/modular-public-test

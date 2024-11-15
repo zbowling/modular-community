@@ -1,18 +1,16 @@
 [project]
 name = "modular-community"
 channels = ["conda-forge"]
-platforms = ["linux-64", "linux-aarch64",  "osx-arm64"]
+platforms = ["linux-64", "linux-aarch64", "osx-arm64"]
 
 [feature.build.tasks]
-build = "rattler-build build -c https://conda.modular.com/max -c conda-forge --variant-config variants/variants.yaml --recipe"
-build-all = { cmd = """rattler-build build --recipe-dir recipes --skip-existing=all --variant-config variants/variants.yaml
-              --channel https://conda.modular.com/max --channel conda-forge --channel https://prefix.dev/modular-community-beta""", env = { RATTLER_AUTH_FILE = "temp_key.json" } }
-build-all-including-existing = { cmd = """rm -rf output && rattler-build build --recipe-dir recipes --variant-config variants/variants.yaml
-              --channel https://conda.modular.com/max --channel conda-forge --channel https://prefix.dev/modular-community-beta""", env = { RATTLER_AUTH_FILE = "temp_key.json" } }
-
+build-all = "python scripts/build-all.py"
+upload = "python scripts/upload.py"
+commit-changes = "python scripts/commit-changes.py"
 
 [feature.build.dependencies]
 rattler-build = ">=0.30.0,<0.31"
+python = ">=3.13.0,<3.14"
 
 [feature.lint.dependencies]
 actionlint = ">=1.7.4,<2"
@@ -26,21 +24,8 @@ pre-commit = ">=4.0.1,<5"
 pre-commit-install = "pre-commit install"
 lint = "pre-commit run -a"
 
-[feature.data.dependencies]
-python = ">=3.13.0,<3.14"
-pygithub = ">=2.5.0,<3"
-httpx = ">=0.27.2,<0.28"
-
-[feature.data.tasks]
-update-data = "python scripts/update-data.py data.json"
-
-[feature.data.tasks.download-previous-artifact]
-cmd = "python scripts/download-previous-artifact.py"
-env = { WORKFLOW_FILENAME = "artifact_pipeline.yml", ARTIFACT_NAME = "data", ARTIFACT_FILENAME = "data.zip" }
-
 [environments]
-default = ["build", "lint", "pre-commit", "data"]
+default = ["build", "lint", "pre-commit"]
 build = ["build"]
 pre-commit = ["pre-commit"]
 lint = ["lint"]
-data = ["data"]
