@@ -28,7 +28,7 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    base_dir = Path("recipe")
+    base_dir = Path("recipes")
     variant_config = "variants/variants.yaml"
     failed_compatibility_file = Path("data/failed-compatibility.json")
     primary_channel = args.channel
