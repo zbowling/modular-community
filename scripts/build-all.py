@@ -69,6 +69,9 @@ def main() -> None:
             }
         else:
             print(f"Successfully built recipe in {recipe_dir}")
+            if recipe_dir.name in failed_compatibility:
+                del failed_compatibility[recipe_dir.name]
+                print(f"Removed {recipe_dir.name} from failed-compatibility.json")
 
     # Save updated failed compatibility data
     save_failed_compatibility(failed_compatibility_file, failed_compatibility)
