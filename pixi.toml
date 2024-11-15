@@ -6,7 +6,7 @@ platforms = ["linux-64", "linux-aarch64", "win-64", "osx-64", "osx-arm64"]
 [feature.build.tasks]
 build = "rattler-build build -c https://conda.modular.com/max -c conda-forge --variant-config variants/variants.yaml --recipe"
 build-all = { cmd = """rattler-build build --recipe-dir recipes --skip-existing=all --variant-config variants/variants.yaml
-              --channel https://conda.modular.com/max --channel conda-forge""", env = { RATTLER_AUTH_FILE = "temp_key.json" } }
+              --channel https://conda.modular.com/max --channel conda-forge --channel https://prefix.dev/modular-community-beta""", env = { RATTLER_AUTH_FILE = "temp_key.json" } }
 
 [feature.build.dependencies]
 rattler-build = ">=0.30.0,<0.31"
