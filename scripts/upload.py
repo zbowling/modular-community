@@ -13,7 +13,6 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    channel = args.channel
     exit_code = 0
 
     for conda_file in Path("output").glob("**/*.conda"):
@@ -22,9 +21,10 @@ def main() -> None:
             "upload",
             "prefix",
             "--channel",
-            channel,
+            args.channel,
             str(conda_file),
         ]
+        print(f"Running command: {' '.join(command)}")
         result = subprocess.run(command, capture_output=True, text=True)
         if result.returncode != 0:
             print(f"Error uploading {conda_file}: {result.stderr}", file=sys.stderr)
