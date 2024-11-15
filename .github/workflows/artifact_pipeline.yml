@@ -25,6 +25,8 @@ jobs:
       - name: Download artifact
         run: |
           pixi run download-previous-artifact
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
 
       - name: Update data
         run: |
