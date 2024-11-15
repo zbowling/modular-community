@@ -4,6 +4,7 @@ from pathlib import Path
 from github import Github
 import sys
 from github import Auth
+import httpx
 
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 WORKFLOW_FILENAME = os.getenv("WORKFLOW_FILENAME")
