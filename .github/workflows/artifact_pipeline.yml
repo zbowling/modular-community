@@ -16,14 +16,14 @@ jobs:
       packages: write
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: prefix-dev/setup-pixi@ba3bb36eb2066252b2363392b7739741bb777659 # v0.8.1
         with:
           pixi-version: v0.31.0
           environments: data
 
       - name: Download artifact
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         env:
           WORKFLOW_FILENAME: artifact_pipeline.yml
           ARTIFACT_NAME: data
