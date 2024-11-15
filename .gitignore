@@ -6,6 +6,7 @@
 
 # rattler-build
 output/
+log.txt
 
 # data
 data.json
