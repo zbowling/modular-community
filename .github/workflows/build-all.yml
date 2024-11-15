@@ -39,11 +39,12 @@ jobs:
           RATTLER_BUILD_COLOR: always
 
       - name: Commit changes to failed-compatibility.json
-        if: github.event_name == 'push'
+        if: github.ref == 'refs/heads/main'
         run: |
           pixi run commit-changes data/failed-compatibility.json
+
       - name: Upload all packages
+        if: github.ref == 'refs/heads/main'
         shell: bash
-        if: github.event_name == 'push' # do not upload on PR
         run: |
           pixi run upload --channel https://prefix.dev/modular-public-test

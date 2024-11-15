@@ -68,7 +68,7 @@ def main() -> None:
                 "failed_at": datetime.now().isoformat()
             }
         else:
-            print(f"Successfully built recipe in {recipe_dir}")
+            print(f"Successfully built recipe {recipe_dir.name}")
             if recipe_dir.name in failed_compatibility:
                 del failed_compatibility[recipe_dir.name]
                 print(f"Removed {recipe_dir.name} from failed-compatibility.json")
