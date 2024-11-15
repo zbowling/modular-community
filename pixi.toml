@@ -28,9 +28,14 @@ lint = "pre-commit run -a"
 
 [feature.data.dependencies]
 python = ">=3.13.0,<3.14"
+pygithub = ">=2.5.0,<3"
 
 [feature.data.tasks]
 update-data = "python scripts/update-data.py data.json"
+
+[feature.data.tasks.download-previous-artifact]
+cmd = "python scripts/download-previous-artifact.py"
+env = { WORKFLOW_FILENAME = "artifact_pipeline.yml", ARTIFACT_NAME = "data", ARTIFACT_FILENAME = "data.zip" }
 
 [environments]
 default = ["build", "lint", "pre-commit", "data"]
