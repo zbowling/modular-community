@@ -47,4 +47,4 @@ jobs:
         if: github.ref == 'refs/heads/main'
         shell: bash
         run: |
-          pixi run upload --channel https://prefix.dev/modular-public-test
+          pixi run upload --channel modular-public-test

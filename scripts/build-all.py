@@ -31,7 +31,6 @@ def main() -> None:
     base_dir = Path("recipes")
     variant_config = "variants/variants.yaml"
     failed_compatibility_file = Path("data/failed-compatibility.json")
-    primary_channel = args.channel
 
     # Load existing failed compatibility data
     failed_compatibility = load_failed_compatibility(failed_compatibility_file)
@@ -46,7 +45,7 @@ def main() -> None:
             "rattler-build",
             "build",
             "--channel",
-            primary_channel,
+            args.channel,
             "--channel",
             "https://conda.modular.com/max",
             "--channel",
