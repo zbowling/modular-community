@@ -3,6 +3,7 @@ import zipfile
 from pathlib import Path
 from github import Github
 import sys
+from github import Auth
 
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 WORKFLOW_FILENAME = os.getenv("WORKFLOW_FILENAME")
@@ -11,7 +12,8 @@ ARTIFACT_FILENAME = os.getenv("ARTIFACT_FILENAME")
 
 
 def main():
-    g = Github(GITHUB_TOKEN)
+    auth = Auth.Token(GITHUB_TOKEN)
+    g = Github(auth=auth)
     repo = g.get_repo("modular/modular-community")
 
     # List workflows
