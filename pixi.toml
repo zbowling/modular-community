@@ -29,6 +29,7 @@ lint = "pre-commit run -a"
 [feature.data.dependencies]
 python = ">=3.13.0,<3.14"
 pygithub = ">=2.5.0,<3"
+httpx = ">=0.27.2,<0.28"
 
 [feature.data.tasks]
 update-data = "python scripts/update-data.py data.json"

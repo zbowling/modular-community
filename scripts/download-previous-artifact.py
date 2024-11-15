@@ -38,10 +38,13 @@ def main():
 
     if artifact:
         # Download artifact
-        artifact_data = artifact.download()
-        with open(ARTIFACT_FILENAME, "wb") as f:
-            f.write(artifact_data.content)
+        download_url = artifact.archive_download_url
+        headers = {"Authorization": f"token {GITHUB_TOKEN}"}
+        response = httpx.get(download_url, headers=headers)
+        response.raise_for_status()
 
+        with open(ARTIFACT_FILENAME, "wb") as f:
+            f.write(response.content)
         # Unzip artifact
         with zipfile.ZipFile(ARTIFACT_FILENAME, "r") as zip_ref:
             zip_ref.extractall(Path(ARTIFACT_FILENAME).parent)
