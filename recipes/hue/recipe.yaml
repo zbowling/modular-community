@@ -16,6 +16,8 @@ build:
 requirements:
   host:
     - max
+  run:
+    - max ${{ max }}
 
 tests:
   - script:
@@ -25,9 +27,6 @@ tests:
     files:
       recipe:
         - test.mojo
-    requirements:
-      run:
-       - max
 
 about:
   homepage: https://github.com/thatstoasty/hue
