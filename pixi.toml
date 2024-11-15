@@ -14,8 +14,10 @@ python = ">=3.13.0,<3.14"
 
 [feature.lint.dependencies]
 actionlint = ">=1.7.4,<2"
+ruff = ">=0.7.3,<0.8"
 check-jsonschema = ">=0.29.4,<0.30"
 shellcheck = ">=0.10.0,<0.11"
+mypy = ">=1.13.0,<2"
 
 [feature.pre-commit.dependencies]
 pre-commit = ">=4.0.1,<5"

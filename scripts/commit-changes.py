@@ -4,7 +4,7 @@ from pathlib import Path
 import argparse
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(description="Commit changes to a specified file.")
     parser.add_argument("file", type=Path, help="The file to commit.")
     args = parser.parse_args()

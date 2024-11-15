@@ -31,3 +31,22 @@ repos:
         entry: pixi run -e lint check-jsonschema --schemafile https://raw.githubusercontent.com/prefix-dev/recipe-format/main/schema.json
         files: ^[^/]+/recipe.yaml$
         types: [yaml]
+      - id: typecheck-python
+        name: typecheck-python
+        entry: pixi run mypy
+        language: system
+        types_or: [python, pyi]
+        pass_filenames: false
+      # Use ruff for python examples
+      - id: ruff
+        name: ruff
+        entry: pixi run -e lint ruff check --fix --exit-non-zero-on-fix --force-exclude
+        language: system
+        types_or: [python, pyi]
+        require_serial: true
+      - id: ruff-format
+        name: ruff-format
+        entry: pixi run -e lint ruff format --force-exclude
+        language: system
+        types_or: [python, pyi]
+        require_serial: true
