@@ -13,7 +13,7 @@ repos:
       # workaround for https://github.com/prefix-dev/pixi/issues/1482
       - id: pixi-install
         name: Make sure pixi envs are up to date
-        entry: pixi install -e lint
+        entry: pixi install
         language: system
         always_run: true
         require_serial: true
@@ -21,13 +21,13 @@ repos:
       - id: actionlint
         name: Lint GitHub Actions workflow files
         language: system
-        entry: pixi run -e lint actionlint
+        entry: pixi run actionlint
         types: [yaml]
         files: ^\.github/workflows/
       - id: check-jsonschema
         name: Check rattler recipes
         language: system
-        entry: pixi run -e lint check-jsonschema --schemafile https://raw.githubusercontent.com/prefix-dev/recipe-format/main/schema.json
+        entry: pixi run check-jsonschema --schemafile https://raw.githubusercontent.com/prefix-dev/recipe-format/main/schema.json
         files: ^[^/]+/recipe.yaml$
         types: [yaml]
       - id: typecheck-python
@@ -39,13 +39,13 @@ repos:
       # Use ruff for python examples
       - id: ruff
         name: ruff
-        entry: pixi run -e lint ruff check --fix --exit-non-zero-on-fix --force-exclude
+        entry: pixi run ruff check --fix --exit-non-zero-on-fix --force-exclude
         language: system
         types_or: [python, pyi]
         require_serial: true
       - id: ruff-format
         name: ruff-format
-        entry: pixi run -e lint ruff format --force-exclude
+        entry: pixi run ruff format --force-exclude
         language: system
         types_or: [python, pyi]
         require_serial: true

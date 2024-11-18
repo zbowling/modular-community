@@ -37,7 +37,9 @@ def main() -> None:
         branch_name = f"delete-{recipe.name.replace('_', '-')}"
         subprocess.run(["git", "switch", "--create", branch_name], check=True)
         subprocess.run(["git", "rm", "-r", recipe], check=True)
-        subprocess.run(["git", "commit", "--message", f"Delete {recipe}"], check=True)
+        subprocess.run(
+            ["git", "commit", "--message", f"Delete recipe '{recipe.name}'"], check=True
+        )
         subprocess.run(["git", "push"], check=True)
 
         # Read the recipe.yaml file
@@ -50,7 +52,7 @@ def main() -> None:
             maintainers = []
 
         # Prepare the PR body
-        body = f"This PR deletes '{recipe}' since it failed compatibility testing four weeks ago. "
+        body = f"This PR deletes '{recipe.name}' since it failed compatibility testing four weeks ago. "
         if maintainers:
             body += (
                 f"Tagging maintainers: {' '.join([f'@{user}' for user in maintainers])}"

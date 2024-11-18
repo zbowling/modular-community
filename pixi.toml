@@ -32,6 +32,3 @@ lint = "pre-commit run -a"
 
 [environments]
 default = ["build", "lint", "pre-commit"]
-build = ["build"]
-pre-commit = ["pre-commit", "lint"]
-lint = ["lint"]
