@@ -9,18 +9,17 @@ import yaml
 
 
 def main() -> None:
-    token = os.getenv("GITHUB_TOKEN")
-    repo_name = os.getenv("GITHUB_REPOSITORY")
-    if not token or not repo_name:
+    github_token = os.getenv("GITHUB_TOKEN")
+    github_repository = os.getenv("GITHUB_REPOSITORY")
+    if not github_token or not github_repository:
         print(
             "GITHUB_TOKEN and GITHUB_REPOSITORY environment variables are required.",
             file=sys.stderr,
         )
         sys.exit(1)
 
-    owner, repo_name = repo_name.split("/")
-    g = Github(token)
-    repo = g.get_repo(f"{owner}/{repo_name}")
+    gh = Github(github_token)
+    repo = gh.get_repo(github_repository)
 
     # Load the failed compatibility data
     failed_compatibility_file = Path("data/failed-compatibility.json")

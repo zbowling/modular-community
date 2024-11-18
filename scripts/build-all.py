@@ -9,7 +9,7 @@ from .common import load_failed_compatibility, save_failed_compatibility
 def main() -> None:
     parser = argparse.ArgumentParser(description="Build all recipes.")
     parser.add_argument(
-        "--channel", required=True, help="The primary channel to use for building."
+        "--channel", nargs="+", required=True, help="The channels to use for building."
     )
     args = parser.parse_args()
 
@@ -29,18 +29,20 @@ def main() -> None:
         command = [
             "rattler-build",
             "build",
-            "--channel",
-            args.channel,
-            "--channel",
-            "https://conda.modular.com/max",
-            "--channel",
-            "conda-forge",
-            "--variant-config",
-            variant_config,
-            "--skip-existing=all",
-            "--recipe",
-            str(recipe_file),
         ]
+        for channel in args.channel:
+            command.extend(["--channel", channel])
+        command.extend(
+            [
+                "--channel",
+                "conda-forge",
+                "--variant-config",
+                variant_config,
+                "--skip-existing=all",
+                "--recipe",
+                str(recipe_file),
+            ]
+        )
         print(f"Running command: {' '.join(command)}")
         result = subprocess.run(command, capture_output=True, text=True)
         if result.returncode != 0:

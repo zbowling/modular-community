@@ -4,9 +4,9 @@ channels = ["conda-forge"]
 platforms = ["linux-64", "linux-aarch64", "osx-arm64"]
 
 [feature.build.tasks]
-build-all = "python scripts/build-all.py"
-upload = "python scripts/upload.py"
-commit-changes = "python scripts/commit-changes.py"
+build-all = "python -m scripts.build-all"
+upload = "python -m scripts.upload"
+commit-changes = "python -m scripts.commit-changes"
 
 [feature.build.dependencies]
 rattler-build = ">=0.30.0,<0.31"
