@@ -52,13 +52,7 @@ def main() -> None:
 
             # Create a commit and push it
             branch_name = f"delete-{recipe.name.replace('_', '-')}"
-            switch_result = subprocess.run(["git", "switch", "--create", branch_name])
-            if switch_result.returncode == 128:
-                eprint(f"Branch '{branch_name}' already exists, skipping")
-                continue
-            else:
-                switch_result.check_returncode()
-
+            subprocess.run(["git", "switch", "--create", branch_name], check=True)
             subprocess.run(
                 ["git", "config", "--global", "user.name", "github-actions[bot]"],
                 check=True,
@@ -86,6 +80,13 @@ def main() -> None:
             title = f"Delete {recipe}"
             pr = repo.create_pull(title=title, body=body, head=branch_name, base="main")
             print(f"Created PR: {pr.html_url}")
+
+            # Remove the failed_at entry for this recipe
+            del failed_compatibility[recipe.name]
+
+            # Save the updated failed compatibility data
+            with failed_compatibility_file.open("w") as file:
+                yaml.safe_dump(failed_compatibility, file)
         except Exception as e:
             # If there's an error, print it and move on to the next recipe
             eprint(f"Error processing {recipe}: {e}")
