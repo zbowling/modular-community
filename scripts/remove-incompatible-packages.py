@@ -28,19 +28,20 @@ def main() -> None:
     # Filter recipes where the failure state is older than four weeks
     four_weeks_ago = datetime.now() - timedelta(weeks=4)
     recipes_to_remove = [
-        recipe
+        Path("recipes", recipe)
         for recipe, failure in failed_compatibility.items()
         if datetime.fromisoformat(failure["failed_at"]) < four_weeks_ago
     ]
 
     for recipe in recipes_to_remove:
-        branch_name = f"delete-{recipe.replace('_', '-')}"
-        subprocess.run(["git", "checkout", "--branch", branch_name], check=True)
-        subprocess.run(["git", "rm", "--recursive", recipe], check=True)
+        branch_name = f"delete-{recipe.name.replace('_', '-')}"
+        subprocess.run(["git", "switch", "--create", branch_name], check=True)
+        subprocess.run(["git", "rm", "-r", recipe], check=True)
         subprocess.run(["git", "commit", "--message", f"Delete {recipe}"], check=True)
+        subprocess.run(["git", "push"], check=True)
 
         # Read the recipe.yaml file
-        recipe_yaml_path = Path(recipe, "recipe.yaml")
+        recipe_yaml_path = recipe / "recipe.yaml"
         if recipe_yaml_path.is_file():
             with recipe_yaml_path.open("r") as file:
                 recipe_data = yaml.safe_load(file)

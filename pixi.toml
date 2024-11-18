@@ -7,6 +7,7 @@ platforms = ["linux-64", "linux-aarch64", "osx-arm64"]
 build-all = "python -m scripts.build-all"
 upload = "python -m scripts.upload"
 commit-changes = "python -m scripts.commit-changes"
+remove-incompatible-packages = "python -m scripts.remove-incompatible-packages"
 
 [feature.build.dependencies]
 rattler-build = ">=0.30.0,<0.31"
