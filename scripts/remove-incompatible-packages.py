@@ -59,6 +59,20 @@ def main() -> None:
             else:
                 switch_result.check_returncode()
 
+            subprocess.run(
+                ["git", "config", "--global", "user.name", "github-actions[bot]"],
+                check=True,
+            )
+            subprocess.run(
+                [
+                    "git",
+                    "config",
+                    "--global",
+                    "user.email",
+                    "github-actions[bot]@users.noreply.github.com",
+                ],
+                check=True,
+            )
             subprocess.run(["git", "rm", "-r", recipe], check=True)
             subprocess.run(
                 ["git", "commit", "--message", f"Delete recipe '{recipe.name}'"],
