@@ -34,3 +34,7 @@ about:
   license_file: LICENSE
   summary: A library for playing with colors in Mojo. https://github.com/thatstoasty/hue
   repository: https://github.com/thatstoasty/hue
+
+extra:
+  maintainers:
+   - Hofer-Julian
