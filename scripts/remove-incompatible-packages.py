@@ -78,7 +78,9 @@ def main() -> None:
                 ["git", "commit", "--message", f"Delete recipe '{recipe.name}'"],
                 check=True,
             )
-            subprocess.run(["git", "push"], check=True)
+            subprocess.run(
+                ["git", "push", "--set-upstream", "origin", branch_name], check=True
+            )
 
             # Create the pull request
             title = f"Delete {recipe}"
