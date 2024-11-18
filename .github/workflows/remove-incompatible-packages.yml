@@ -5,6 +5,9 @@ on:
   schedule:
     - cron: "0 17 * * *" # 9 AM PST
 
+permissions:
+  contents: write
+
 jobs:
   check-incompatible-packages:
     runs-on: ubuntu-latest
