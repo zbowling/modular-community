@@ -1,6 +1,7 @@
 name: Check Incompatible Packages
 
 on:
+  workflow_dispatch:
   schedule:
     - cron: "0 17 * * *" # 9 AM PST
 
