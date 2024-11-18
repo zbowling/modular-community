@@ -1,9 +1,9 @@
 import subprocess
 from pathlib import Path
-import sys
 from datetime import datetime
 import argparse
-from .common import load_failed_compatibility, save_failed_compatibility
+from scripts.common import load_failed_compatibility, save_failed_compatibility, eprint
+import sys
 
 
 def main() -> None:
@@ -20,10 +20,12 @@ def main() -> None:
     # Load existing failed compatibility data
     failed_compatibility = load_failed_compatibility(failed_compatibility_file)
 
+    exit_code = 0
+
     for recipe_dir in base_dir.iterdir():
         recipe_file = recipe_dir / "recipe.yaml"
         if not recipe_file.is_file():
-            print(f"{recipe_dir} doesn't contain recipe.yaml", file=sys.stderr)
+            eprint(f"{recipe_dir} doesn't contain recipe.yaml")
             continue
 
         command = [
@@ -46,13 +48,11 @@ def main() -> None:
         print(f"Running command: {' '.join(command)}")
         result = subprocess.run(command, capture_output=True, text=True)
         if result.returncode != 0:
-            print(
-                f"Error building recipe in {recipe_dir}: {result.stderr}",
-                file=sys.stderr,
-            )
+            eprint(f"Error building recipe in {recipe_dir}: {result.stderr}")
             failed_compatibility[recipe_dir.name] = {
                 "failed_at": datetime.now().isoformat()
             }
+            exit_code = 1
         else:
             print(f"Successfully built recipe {recipe_dir.name}")
             if recipe_dir.name in failed_compatibility:
@@ -61,6 +61,7 @@ def main() -> None:
 
     # Save updated failed compatibility data
     save_failed_compatibility(failed_compatibility_file, failed_compatibility)
+    sys.exit(exit_code)
 
 
 if __name__ == "__main__":

@@ -3,6 +3,8 @@ import sys
 from pathlib import Path
 import argparse
 
+from scripts.common import eprint
+
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Commit changes to a specified file.")
@@ -10,7 +12,7 @@ def main() -> None:
     args = parser.parse_args()
 
     if not args.file.exists():
-        print(f"{args.file} does not exist.", file=sys.stderr)
+        eprint(f"{args.file} does not exist.")
         sys.exit(1)
 
     # Configure git

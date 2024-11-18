@@ -3,7 +3,7 @@ import subprocess
 import sys
 from pathlib import Path
 from github import Github
-from .common import load_failed_compatibility
+from scripts.common import eprint, load_failed_compatibility
 from datetime import datetime, timedelta
 import yaml
 
@@ -12,10 +12,7 @@ def main() -> None:
     github_token = os.getenv("GITHUB_TOKEN")
     github_repository = os.getenv("GITHUB_REPOSITORY")
     if not github_token or not github_repository:
-        print(
-            "GITHUB_TOKEN and GITHUB_REPOSITORY environment variables are required.",
-            file=sys.stderr,
-        )
+        eprint("GITHUB_TOKEN and GITHUB_REPOSITORY environment variables are required.")
         sys.exit(1)
 
     gh = Github(github_token)
@@ -33,36 +30,53 @@ def main() -> None:
         if datetime.fromisoformat(failure["failed_at"]) < four_weeks_ago
     ]
 
+    exit_code = 0
     for recipe in recipes_to_remove:
-        branch_name = f"delete-{recipe.name.replace('_', '-')}"
-        subprocess.run(["git", "switch", "--create", branch_name], check=True)
-        subprocess.run(["git", "rm", "-r", recipe], check=True)
-        subprocess.run(
-            ["git", "commit", "--message", f"Delete recipe '{recipe.name}'"], check=True
-        )
-        subprocess.run(["git", "push"], check=True)
+        try:
+            # Read the recipe.yaml file
+            recipe_yaml_path = recipe / "recipe.yaml"
+            if recipe_yaml_path.is_file():
+                with recipe_yaml_path.open("r") as file:
+                    recipe_data = yaml.safe_load(file)
+                    maintainers = recipe_data.get("extra", {}).get("maintainers", [])
+            else:
+                eprint(f"{recipe_yaml_path} does not exist")
+                maintainers = []
 
-        # Read the recipe.yaml file
-        recipe_yaml_path = recipe / "recipe.yaml"
-        if recipe_yaml_path.is_file():
-            with recipe_yaml_path.open("r") as file:
-                recipe_data = yaml.safe_load(file)
-                maintainers = recipe_data.get("extra", {}).get("maintainers", [])
-        else:
-            maintainers = []
+            # Prepare the PR body
+            body = f"This PR deletes '{recipe.name}' since it failed compatibility testing four weeks ago.\n"
+            if maintainers:
+                body += f"Tagging maintainers: {' '.join([f'@{user}' for user in maintainers])}"
+            else:
+                body += "Maintainers couldn't be extracted from recipe.yaml."
 
-        # Prepare the PR body
-        body = f"This PR deletes '{recipe.name}' since it failed compatibility testing four weeks ago. "
-        if maintainers:
-            body += (
-                f"Tagging maintainers: {' '.join([f'@{user}' for user in maintainers])}"
+            # Create a commit and push it
+            branch_name = f"delete-{recipe.name.replace('_', '-')}"
+            switch_result = subprocess.run(["git", "switch", "--create", branch_name])
+            if switch_result.returncode == 128:
+                eprint(f"Branch '{branch_name}' already exists, skipping")
+                continue
+            else:
+                switch_result.check_returncode()
+
+            subprocess.run(["git", "rm", "-r", recipe], check=True)
+            subprocess.run(
+                ["git", "commit", "--message", f"Delete recipe '{recipe.name}'"],
+                check=True,
             )
-        else:
-            body += "Maintainers couldn't be extracted from recipe.yaml."
+            subprocess.run(["git", "push"], check=True)
 
-        title = f"Delete {recipe}"
-        pr = repo.create_pull(title=title, body=body, head=branch_name, base="main")
-        print(f"Created PR: {pr.html_url}")
+            # Create the pull request
+            title = f"Delete {recipe}"
+            pr = repo.create_pull(title=title, body=body, head=branch_name, base="main")
+            print(f"Created PR: {pr.html_url}")
+        except Exception as e:
+            # If there's an error, print it and move on to the next recipe
+            eprint(f"Error processing {recipe}: {e}")
+            exit_code = 1
+            continue
+
+    sys.exit(exit_code)
 
 
 if __name__ == "__main__":

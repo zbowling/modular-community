@@ -3,6 +3,8 @@ import sys
 from pathlib import Path
 import argparse
 
+from scripts.common import eprint
+
 
 def main() -> None:
     parser = argparse.ArgumentParser(
@@ -27,7 +29,7 @@ def main() -> None:
         print(f"Running command: {' '.join(command)}")
         result = subprocess.run(command, capture_output=True, text=True)
         if result.returncode != 0:
-            print(f"Error uploading {conda_file}: {result.stderr}", file=sys.stderr)
+            eprint(f"Error uploading {conda_file}: {result.stderr}")
             exit_code = 1
 
     sys.exit(exit_code)

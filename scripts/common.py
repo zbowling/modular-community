@@ -1,6 +1,7 @@
-from typing import TypedDict
+from typing import Any, TypedDict
 import json
 from pathlib import Path
+import sys
 
 
 class RecipeFailure(TypedDict):
@@ -19,3 +20,7 @@ def save_failed_compatibility(file_path: Path, data: dict[str, RecipeFailure]) -
         file_path.parent.mkdir(parents=True, exist_ok=True)
     with file_path.open("w") as file:
         json.dump(data, file, indent=4)
+
+
+def eprint(*args: Any, **kwargs: Any) -> None:
+    print(*args, file=sys.stderr, **kwargs)
