@@ -79,14 +79,15 @@ def main() -> None:
             # Remove the failed_at entry for this recipe
             del failed_compatibility[recipe.name]
 
-            # Save the updated failed compatibility data
-            with failed_compatibility_file.open("w") as file:
-                yaml.safe_dump(failed_compatibility, file)
         except Exception as e:
             # If there's an error, print it and move on to the next recipe
             eprint(f"Error processing {recipe}: {e}")
             exit_code = 1
             continue
+
+    # Save the updated failed compatibility data
+    with failed_compatibility_file.open("w") as file:
+        yaml.safe_dump(failed_compatibility, file)
 
     # Commit and push changes to the failed compatibility file
     subprocess.run(["git", "add", failed_compatibility_file], check=True)
