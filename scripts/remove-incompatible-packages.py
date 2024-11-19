@@ -72,7 +72,7 @@ def main() -> None:
             )
 
             # Create the pull request
-            title = f"Delete {recipe}"
+            title = f"Delete recipe {recipe.name}"
             pr = repo.create_pull(title=title, body=body, head=branch_name, base="main")
             print(f"Created PR: {pr.html_url}")
 
