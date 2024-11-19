@@ -27,8 +27,3 @@ jobs:
         env:
           GITHUB_REPOSITORY: "${{ github.repository }}"
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-
-      - name: Commit changes to failed-compatibility.json
-        if: github.ref == 'refs/heads/main'
-        run: |
-          pixi run commit-changes data/failed-compatibility.json

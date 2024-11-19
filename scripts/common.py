@@ -63,6 +63,10 @@ def commit_push_changes(message: str, branch_name: str) -> None:
     Commit and push changes to the specified branch with a given commit message.
     If there are no changes, do nothing.
     """
+
+    # Switch to branch
+    subprocess.run(["git", "switch", branch_name])
+
     # Check if there are changes to commit
     result = subprocess.run(
         ["git", "diff-index", "--quiet", "HEAD"], capture_output=True
