@@ -3,7 +3,7 @@ import sys
 from pathlib import Path
 import argparse
 
-from scripts.common import eprint
+from scripts.common import commit_push_changes, configure_git, eprint
 
 
 def main() -> None:
@@ -16,34 +16,11 @@ def main() -> None:
         sys.exit(1)
 
     # Configure git
-    subprocess.run(
-        ["git", "config", "--global", "user.name", "github-actions[bot]"], check=True
-    )
-    subprocess.run(
-        [
-            "git",
-            "config",
-            "--global",
-            "user.email",
-            "github-actions[bot]@users.noreply.github.com",
-        ],
-        check=True,
-    )
+    configure_git()
 
-    # Add the file to the staging area
-    subprocess.run(["git", "add", str(args.file)], check=True)
-
-    # Check if there are changes to commit
-    result = subprocess.run(
-        ["git", "diff-index", "--quiet", "HEAD"], capture_output=True
-    )
-    if result.returncode == 0:
-        print("No changes to commit.")
-        sys.exit(0)
-
-    # Commit and push the changes
-    subprocess.run(["git", "commit", "-m", f"Update {args.file.name}"], check=True)
-    subprocess.run(["git", "push"], check=True)
+    # Commit and push changes
+    subprocess.run(["git", "add", args.file], check=True)
+    commit_push_changes(f"Update {args.file.name}", "main")
 
 
 if __name__ == "__main__":

@@ -3,9 +3,15 @@ import subprocess
 import sys
 from pathlib import Path
 from github import Github
-from scripts.common import eprint, load_failed_compatibility
+from scripts.common import (
+    commit_push_changes,
+    eprint,
+    load_failed_compatibility,
+    configure_git,
+)
 from datetime import datetime, timedelta
 import yaml
+import uuid
 
 
 def main() -> None:
@@ -30,6 +36,8 @@ def main() -> None:
         if datetime.fromisoformat(failure["failed_at"]) < four_weeks_ago
     ]
 
+    configure_git()
+
     exit_code = 0
     for recipe in recipes_to_remove:
         try:
@@ -51,22 +59,9 @@ def main() -> None:
                 body += "Maintainers couldn't be extracted from recipe.yaml."
 
             # Create a commit and push it
-            branch_name = f"delete-{recipe.name.replace('_', '-')}"
+            hash = uuid.uuid4().hex[:7]
+            branch_name = f"delete-recipe-{hash}"
             subprocess.run(["git", "switch", "--create", branch_name], check=True)
-            subprocess.run(
-                ["git", "config", "--global", "user.name", "github-actions[bot]"],
-                check=True,
-            )
-            subprocess.run(
-                [
-                    "git",
-                    "config",
-                    "--global",
-                    "user.email",
-                    "github-actions[bot]@users.noreply.github.com",
-                ],
-                check=True,
-            )
             subprocess.run(["git", "rm", "-r", recipe], check=True)
             subprocess.run(
                 ["git", "commit", "--message", f"Delete recipe '{recipe.name}'"],
@@ -92,6 +87,10 @@ def main() -> None:
             eprint(f"Error processing {recipe}: {e}")
             exit_code = 1
             continue
+
+    # Commit and push changes to the failed compatibility file
+    subprocess.run(["git", "add", failed_compatibility_file], check=True)
+    commit_push_changes(f"Update {failed_compatibility_file.name}", "main")
 
     sys.exit(exit_code)
 
