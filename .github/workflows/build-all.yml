@@ -10,8 +10,6 @@ on:
   pull_request:
     branches:
       - main
-    paths:
-      - "variants/variants.yml"
 
 permissions:
   contents: write
