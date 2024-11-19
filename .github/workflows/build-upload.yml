@@ -7,9 +7,6 @@ on:
     paths:
       - "variants/variants.yml"
   workflow_dispatch:
-  pull_request:
-    branches:
-      - main
 
 permissions:
   contents: write
@@ -36,12 +33,10 @@ jobs:
           RATTLER_BUILD_COLOR: always
 
       - name: Commit changes to failed-compatibility.json
-        if: github.ref == 'refs/heads/main'
         run: |
           pixi run commit-changes data/failed-compatibility.json
 
       - name: Upload all packages
-        if: github.ref == 'refs/heads/main'
         shell: bash
         run: |
           pixi run upload --channel modular-public-test
