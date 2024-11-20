@@ -1,4 +1,4 @@
-name: Check Incompatible Packages
+name: Remove Incompatible Packages
 
 on:
   workflow_dispatch:
