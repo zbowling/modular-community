@@ -20,6 +20,8 @@ jobs:
           - ubuntu-latest
           - macos-latest
     runs-on: ${{ matrix.os }}
+    env:
+      DATA_FILE: data/failed-compatibility-${{ matrix.os }}.json
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
@@ -39,7 +41,7 @@ jobs:
 
       - name: Commit changes to failed-compatibility.json
         run: |
-          pixi run commit-changes data/failed-compatibility.json
+          pixi run commit-changes ${{ env.DATA_FILE }}
 
       - name: Upload all packages
         shell: bash
