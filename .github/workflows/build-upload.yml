@@ -28,27 +28,22 @@ jobs:
           fetch-depth: 2
       - uses: prefix-dev/setup-pixi@ba3bb36eb2066252b2363392b7739741bb777659 # v0.8.1
         with:
-          pixi-version: v0.31.0
-          activate-environment: true
+          pixi-version: v0.37.0
 
       - name: Configure git
-        run: |
-          pixi run configure-git
+        run: pixi run configure-git
 
       - name: Build packages
         shell: bash
-        run: |
-          pixi run build-all --channel https://prefix.dev/modular-public-test --channel https://conda.modular.com/max
+        run: pixi run build-all --channel https://prefix.dev/modular-public-test --channel https://conda.modular.com/max
         env:
           RATTLER_BUILD_ENABLE_GITHUB_INTEGRATION: true
           RATTLER_BUILD_COLOR: always
 
       - name: Commit changes to failed-compatibility.json
-        run: |
-          pixi run commit-changes ${{ env.DATA_FILE }}
+        run: pixi run commit-changes ${{ env.DATA_FILE }}
         if: always()
 
       - name: Upload all packages
         shell: bash
-        run: |
-          pixi run upload --channel modular-public-test
+        run: pixi run upload --channel modular-public-test
