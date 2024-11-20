@@ -1,4 +1,4 @@
-name: Build all packages
+name: Build and upload packages
 
 on:
   push:

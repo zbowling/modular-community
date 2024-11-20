@@ -1,4 +1,4 @@
-name: Build all packages
+name: Build pull request
 
 on:
   workflow_dispatch:
