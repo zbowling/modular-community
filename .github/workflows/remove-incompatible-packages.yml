@@ -22,6 +22,10 @@ jobs:
           pixi-version: v0.31.0
           activate-environment: true
 
+      - name: Configure git
+        run: |
+          pixi run configure-git
+
       - name: Run compatibility check script
         run: pixi run remove-incompatible-packages
         env:

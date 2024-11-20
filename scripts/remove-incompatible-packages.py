@@ -7,7 +7,6 @@ from scripts.common import (
     commit_push_changes,
     eprint,
     load_failed_compatibility,
-    configure_git,
 )
 from datetime import datetime, timedelta
 import yaml
@@ -39,8 +38,6 @@ def main() -> None:
         for recipe_str, failure in failed_compatibility[file_path].items():
             if datetime.fromisoformat(failure["failed_at"]) < four_weeks_ago:
                 recipes_to_remove.add(Path("recipes", recipe_str))
-
-    configure_git()
 
     exit_code = 0
     for recipe in recipes_to_remove:
@@ -95,7 +92,7 @@ def main() -> None:
     for failed_compatibility_file in failed_compatibility_files:
         # Save the updated failed compatibility data
         with failed_compatibility_file.open("w") as file:
-            yaml.safe_dump(failed_compatibility, file)
+            yaml.safe_dump(failed_compatibility[failed_compatibility_file], file)
 
         # Commit and push changes to the failed compatibility file
         subprocess.run(["git", "add", failed_compatibility_file], check=True)

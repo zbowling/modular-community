@@ -31,6 +31,10 @@ jobs:
           pixi-version: v0.31.0
           activate-environment: true
 
+      - name: Configure git
+        run: |
+          pixi run configure-git
+
       - name: Build packages
         shell: bash
         run: |

@@ -8,6 +8,7 @@ build-all = "python -m scripts.build-all"
 upload = "python -m scripts.upload"
 commit-changes = "python -m scripts.commit-changes"
 remove-incompatible-packages = "python -m scripts.remove-incompatible-packages"
+configure-git = "python -m scripts.configure-git"
 
 [feature.build.dependencies]
 rattler-build = ">=0.30.0,<0.31"
