@@ -42,6 +42,7 @@ jobs:
       - name: Commit changes to failed-compatibility.json
         run: |
           pixi run commit-changes ${{ env.DATA_FILE }}
+        if: always()
 
       - name: Upload all packages
         shell: bash
