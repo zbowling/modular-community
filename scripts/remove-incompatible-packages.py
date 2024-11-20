@@ -24,17 +24,21 @@ def main() -> None:
     gh = Github(github_token)
     repo = gh.get_repo(github_repository)
 
-    # Load the failed compatibility data
-    failed_compatibility_file = Path("data/failed-compatibility.json")
-    failed_compatibility = load_failed_compatibility(failed_compatibility_file)
+    # Gather all failed compatibility files
+    failed_compatibility_files = Path("data").glob("failed-compatibility-*.json")
+
+    # Initialize a set to store recipes to remove
+    recipes_to_remove = set()
+    failed_compatibility = dict()
 
     # Filter recipes where the failure state is older than four weeks
     four_weeks_ago = datetime.now() - timedelta(weeks=4)
-    recipes_to_remove = [
-        Path("recipes", recipe)
-        for recipe, failure in failed_compatibility.items()
-        if datetime.fromisoformat(failure["failed_at"]) < four_weeks_ago
-    ]
+
+    for file_path in failed_compatibility_files:
+        failed_compatibility[file_path] = load_failed_compatibility(file_path)
+        for recipe_str, failure in failed_compatibility[file_path].items():
+            if datetime.fromisoformat(failure["failed_at"]) < four_weeks_ago:
+                recipes_to_remove.add(Path("recipes", recipe_str))
 
     configure_git()
 
@@ -77,7 +81,9 @@ def main() -> None:
             print(f"Created PR: {pr.html_url}")
 
             # Remove the failed_at entry for this recipe
-            del failed_compatibility[recipe.name]
+            for key in failed_compatibility:
+                if recipe.name in failed_compatibility[key]:
+                    del failed_compatibility[key][recipe.name]
 
         except Exception as e:
             # If there's an error, print it and move on to the next recipe
@@ -85,13 +91,17 @@ def main() -> None:
             exit_code = 1
             continue
 
-    # Save the updated failed compatibility data
-    with failed_compatibility_file.open("w") as file:
-        yaml.safe_dump(failed_compatibility, file)
+    # Iterate through each failed compatibility file
+    for failed_compatibility_file in failed_compatibility_files:
+        # Save the updated failed compatibility data
+        with failed_compatibility_file.open("w") as file:
+            yaml.safe_dump(failed_compatibility, file)
 
-    # Commit and push changes to the failed compatibility file
-    subprocess.run(["git", "add", failed_compatibility_file], check=True)
-    commit_push_changes(f"Update {failed_compatibility_file.name}", "main")
+        # Commit and push changes to the failed compatibility file
+        subprocess.run(["git", "add", failed_compatibility_file], check=True)
+
+    # Commit and push all changes
+    commit_push_changes("Update all failed compatibility files", "main")
 
     sys.exit(exit_code)
 
