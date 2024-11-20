@@ -1,9 +1,8 @@
-import subprocess
 import sys
 from pathlib import Path
 import argparse
 
-from scripts.common import commit_push_changes, eprint
+from scripts.common import commit_push_changes, eprint, run_command
 
 
 def main() -> None:
@@ -16,7 +15,7 @@ def main() -> None:
         sys.exit(1)
 
     # Commit and push changes
-    subprocess.run(["git", "add", args.file], check=True)
+    run_command(["git", "add", args.file])
     commit_push_changes(f"Update {args.file.name}", "main")
 
 

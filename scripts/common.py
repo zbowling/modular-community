@@ -34,17 +34,32 @@ def commit_push_changes(message: str, branch_name: str) -> None:
     """
 
     # Switch to branch
-    subprocess.run(["git", "switch", branch_name])
+    run_command(["git", "switch", branch_name])
 
     # Check if there are changes to commit
-    result = subprocess.run(
-        ["git", "diff-index", "--quiet", "HEAD"], capture_output=True
-    )
+    result = run_command_unchecked(["git", "diff-index", "--quiet", "HEAD"])
     if result.returncode == 0:
         eprint("No changes to commit.")
         return
 
     # Commit, pull and push the changes
-    subprocess.run(["git", "pull", "origin", branch_name], check=True)
-    subprocess.run(["git", "commit", "--message", message, "--no-verify"], check=True)
-    subprocess.run(["git", "push", "--set-upstream", "origin", branch_name], check=True)
+    run_command(["git", "pull", "origin", branch_name])
+    run_command(["git", "commit", "--message", message, "--no-verify"])
+    run_command(["git", "push", "--set-upstream", "origin", branch_name])
+
+
+def run_command_unchecked(command: list[str]) -> subprocess.CompletedProcess[Any]:
+    eprint(" ".join(command))
+    result = subprocess.run(command, capture_output=True, text=True)
+    return result
+
+
+def run_command(command: list[str]) -> subprocess.CompletedProcess[Any]:
+    result = run_command_unchecked(command)
+    if result.returncode != 0:
+        eprint("Command failed")
+        print(f"stdout: {result.stdout}")
+        eprint(f"stderr: {result.stderr}")
+        sys.exit(result.returncode)
+
+    return result

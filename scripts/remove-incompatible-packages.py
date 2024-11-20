@@ -1,5 +1,4 @@
 import os
-import subprocess
 import sys
 from pathlib import Path
 from github import Github
@@ -7,6 +6,7 @@ from scripts.common import (
     commit_push_changes,
     eprint,
     load_failed_compatibility,
+    run_command,
 )
 from datetime import datetime, timedelta
 import yaml
@@ -24,7 +24,7 @@ def main() -> None:
     repo = gh.get_repo(github_repository)
 
     # Gather all failed compatibility files
-    failed_compatibility_files = Path("data").glob("failed-compatibility-*.json")
+    failed_compatibility_files = list(Path("data").glob("failed-compatibility-*.json"))
 
     # Initialize a set to store recipes to remove
     recipes_to_remove = set()
@@ -62,15 +62,12 @@ def main() -> None:
             # Create a commit and push it
             hash = uuid.uuid4().hex[:7]
             branch_name = f"delete-recipe-{hash}"
-            subprocess.run(["git", "switch", "--create", branch_name], check=True)
-            subprocess.run(["git", "rm", "-r", recipe], check=True)
-            subprocess.run(
-                ["git", "commit", "--message", f"Delete recipe '{recipe.name}'"],
-                check=True,
+            run_command(["git", "switch", "--create", branch_name])
+            run_command(["git", "rm", "-r", str(recipe)])
+            run_command(
+                ["git", "commit", "--message", f"Delete recipe '{recipe.name}'"]
             )
-            subprocess.run(
-                ["git", "push", "--set-upstream", "origin", branch_name], check=True
-            )
+            run_command(["git", "push", "--set-upstream", "origin", branch_name])
 
             # Create the pull request
             title = f"Delete recipe {recipe.name}"
@@ -95,10 +92,10 @@ def main() -> None:
             yaml.safe_dump(failed_compatibility[failed_compatibility_file], file)
 
         # Commit and push changes to the failed compatibility file
-        subprocess.run(["git", "add", failed_compatibility_file], check=True)
+        run_command(["git", "add", str(failed_compatibility_file)])
 
     # Commit and push all changes
-    commit_push_changes("Update all failed compatibility files", "main")
+    commit_push_changes("Update failed compatibility files", "main")
 
     sys.exit(exit_code)
 

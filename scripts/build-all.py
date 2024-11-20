@@ -1,8 +1,12 @@
-import subprocess
 from pathlib import Path
 from datetime import datetime
 import argparse
-from scripts.common import load_failed_compatibility, save_failed_compatibility, eprint
+from scripts.common import (
+    load_failed_compatibility,
+    run_command_unchecked,
+    save_failed_compatibility,
+    eprint,
+)
 import sys
 import os
 
@@ -53,8 +57,7 @@ def main() -> None:
                 str(recipe_file),
             ]
         )
-        print(f"Running command: {' '.join(command)}")
-        result = subprocess.run(command, capture_output=True, text=True)
+        result = run_command_unchecked(command)
         if failed_compatibility is not None:
             if result.returncode != 0:
                 eprint(f"Error building recipe in {recipe_dir}: {result.stderr}")

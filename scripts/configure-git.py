@@ -1,4 +1,4 @@
-import subprocess
+from scripts.common import run_command
 
 
 def main() -> None:
@@ -16,19 +16,15 @@ def main() -> None:
     Raises:
         subprocess.CalledProcessError: If any of the subprocess calls fail.
     """
-    subprocess.run(
-        ["git", "config", "--global", "user.name", "github-actions[bot]"],
-        check=True,
-    )
-    subprocess.run(
+    run_command(["git", "config", "--global", "user.name", "github-actions[bot]"])
+    run_command(
         [
             "git",
             "config",
             "--global",
             "user.email",
             "github-actions[bot]@users.noreply.github.com",
-        ],
-        check=True,
+        ]
     )
 
 
