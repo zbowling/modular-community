@@ -75,6 +75,7 @@ def commit_push_changes(message: str, branch_name: str) -> None:
         eprint("No changes to commit.")
         return
 
-    # Commit and push the changes
+    # Commit, pull and push the changes
+    subprocess.run(["git", "pull", "origin", branch_name], check=True)
     subprocess.run(["git", "commit", "--message", message], check=True)
     subprocess.run(["git", "push", "--set-upstream", "origin", branch_name], check=True)
