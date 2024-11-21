@@ -19,6 +19,7 @@ jobs:
         os:
           - ubuntu-latest
           - macos-latest
+          - magic_arm64_8core
     runs-on: ${{ matrix.os }}
     env:
       DATA_FILE: data/failed-compatibility-${{ matrix.os }}.json
