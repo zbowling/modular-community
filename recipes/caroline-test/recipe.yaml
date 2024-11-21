@@ -10,7 +10,7 @@ source:
     rev: 32ff979d86393cf91068ead70e96ce18cd701106
 
 build:
-  number: 3
+  number: 0
   script:
     - mojo package src/hue -o ${{ PREFIX }}/lib/mojo/hue.mojopkg
 requirements:
