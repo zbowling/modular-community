@@ -58,15 +58,16 @@ def main() -> None:
             ]
         )
         result = run_command_unchecked(command)
-        if failed_compatibility is not None:
-            if result.returncode != 0:
-                eprint(f"Error building recipe in {recipe_dir}: {result.stderr}")
+        if result.returncode != 0:
+            eprint(f"Error building recipe in {recipe_dir}: {result.stderr}")
+            exit_code = 1
+            if failed_compatibility is not None:
                 failed_compatibility[recipe_dir.name] = {
                     "failed_at": datetime.now().isoformat()
                 }
-                exit_code = 1
-            else:
-                print(f"Successfully built recipe {recipe_dir.name}")
+        else:
+            print(f"Successfully built recipe {recipe_dir.name}")
+            if failed_compatibility is not None:
                 if recipe_dir.name in failed_compatibility:
                     del failed_compatibility[recipe_dir.name]
                     print(f"Removed {recipe_dir.name} from failed-compatibility.json")
