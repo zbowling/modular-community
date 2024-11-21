@@ -16,13 +16,13 @@ jobs:
   build:
     strategy:
       matrix:
-        os:
+        label:
           - ubuntu-latest
           - macos-latest
           - magic_arm64_8core
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.label }}
     env:
-      DATA_FILE: data/failed-compatibility-${{ matrix.os }}.json
+      DATA_FILE: data/failed-compatibility-${{ matrix.label }}.json
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:

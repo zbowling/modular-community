@@ -15,7 +15,7 @@ def main() -> None:
         sys.exit(1)
 
     # Commit and push changes
-    run_command(["git", "add", args.file])
+    run_command(["git", "add", str(args.file)])
     commit_push_changes(f"Update {args.file.name}", "main")
 
 
