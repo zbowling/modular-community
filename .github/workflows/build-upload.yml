@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - "variants/variants.yml"
   workflow_dispatch:
 
 permissions:
