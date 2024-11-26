@@ -27,11 +27,8 @@ def main() -> None:
         ]
         result = run_command_unchecked(command)
         if result.returncode != 0:
-            if "409 Conflict" in result.stderr:
-                eprint(f"Package {conda_file} already exists upstream.")
-            else:
-                eprint(f"Error uploading {conda_file}: {result.stderr}")
-                exit_code = 1
+            eprint(f"Error uploading {conda_file}: {result.stderr}")
+            exit_code = 1
 
     sys.exit(exit_code)
 
