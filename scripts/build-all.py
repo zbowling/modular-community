@@ -14,7 +14,10 @@ import os
 def main() -> None:
     parser = argparse.ArgumentParser(description="Build all recipes.")
     parser.add_argument(
-        "--channel", nargs="+", required=True, help="The channels to use for building."
+        "--channel",
+        action="append",
+        required=True,
+        help="The channels to use for building.",
     )
     parser.add_argument(
         "--data-file",
@@ -44,6 +47,7 @@ def main() -> None:
             "rattler-build",
             "build",
         ]
+
         for channel in args.channel:
             command.extend(["--channel", channel])
         command.extend(
